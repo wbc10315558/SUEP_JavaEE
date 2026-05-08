@@ -65,7 +65,7 @@
 4. 完成后点击发布，回到项目文件夹中。
 5. 进入【项目文件夹】/src/main/resources文件夹，找到application.yml，将配置文件中的数据库用户名和密码、nacos用户名和密码换成自己的。
 6. 完成之后，打开Intell IDEA，先关闭以前的项目，再在开始页面右上角点击“打开”，导航到项目文件夹，点击“选择文件夹”以打开。
-7. 在IDE中打开pom.xml，右键点击“+添加为maven项目”，随后再次右键选择maven -> 同步项目以安装pom.xml中的依赖。
+7. 在IDE中打开pom.xml，右键点击“+添加为maven项目”，随后再次右键选择maven -> 同步项目以安装pom.xml中的依赖。如果你打开文件夹之后，IDE右下角自动弹出“找到maven依赖文件”的窗口，那就更方便了，点击加载即可一键完成依赖安装。
 8. 编写启动配置，在IDE右上角，找到“当前文件”，点击下拉菜单，选择“编辑配置”
 9. 点击左上角加号，新建一个类型为SpringBoot的启动配置，启动类为DemoApplication（要输入完整，如本项目为com.demo.DemoApplication），点击“修改选项”，找到“程序实参”，在新增的输入框中输入“--spring.application.name=demo --server.port=8081”，点击应用生效。
 10. 点击左上角加号，新建一个类型为SpringBoot的启动配置，启动类为GatewayApplication（要输入完整，如本项目为com.gateway.GatewayApplication），点击“修改选项”，找到“程序实参”，在新增的输入框中输入“--spring.application.name=gateway --server.port=8082”，点击应用生效。
