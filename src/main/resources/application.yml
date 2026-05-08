@@ -1,0 +1,41 @@
+spring:
+
+  # 每项服务都有专用于这个服务的配置
+  profiles:
+    # 当前激活的专用配置
+    active: dev
+  # 如果公共配置文件和专用配置文件都配置了同一个参数，则专用配置优先于公用配置生效
+
+  # 这段配置的含义是：
+  # 当spring.profiles.active设置为dev，spring.application.name为demo时
+  # 程序会尝试动态加载demo-dev.yml中的配置
+  # 如果不加optional前缀，那么Spring服务启动前，nacos中必须存在对应名字的配置文件
+  # 否则，即使静态配置文件参数齐全足以让服务启动，程序也会主动终止
+  config:
+    import:
+      optional:nacos:${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+
+  # Spring服务需要数据库软件作为支撑
+  # 这里定义的是一个默认的数据源，如果专用配置定义了别的数据源，则会使用后者
+  datasource:
+    url: jdbc:mysql://{你的数据库IP和端口号}/shiep?useUnicode=true&characterEncoding=utf8&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: {你的数据库账号}
+    password: {你的数据库密码}
+
+  # Spring Cloud的实验都需要将服务注册到nacos服务管理软件中
+  cloud:
+    nacos:
+      # 将Spring服务注册到nacos，需要提供nacos的的用户名和密码
+      username: {nacos管理页面的账号}
+      password: {nacos管理页面的密码}
+      discovery:
+        # nacos采用命名空间（namespace）对服务进行隔离，同时也使用组（group）对服务进行分类
+        # 因此我们需要指定将Spring服务注册到ID为shiep的命名空间，使用默认组
+        # 注意：这里namespace需要输入的内容是命名空间的ID，而不是nacos管理页面中显示的“命名空间名称”
+        namespace: shiep
+        group: DEFAULT_GROUP
+
+      # 这个参数告诉程序，nacos中配置文件的格式是yml
+      config:
+        file-extension: yml

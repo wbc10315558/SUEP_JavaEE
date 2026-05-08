@@ -1,0 +1,35 @@
+# 本配置文件应当被导入到nacos中去
+spring:
+
+  application:
+    name: gateway
+
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  cloud:
+    gateway:
+      routes:
+        #demo服务的代理
+        - id: demo
+          uri: lb://demo
+          predicates:
+            - Path=/demo/**
+          filters:
+            - StripPrefix=1
+
+security:
+
+  captcha:
+    enabled: true
+    type: math
+
+  xss:
+    enabled: true
+    excludeUrls:
+
+  ignore:
+    whites:
+      - /auth/**
