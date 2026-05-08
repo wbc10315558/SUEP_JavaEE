@@ -1,4 +1,4 @@
-# Java EE：Spring Cloud实验常见问题
+# Java EE：Spring Cloud实验说明
 
 ​	为了帮助更高效地解决Spring Cloud服务部署中出现的问题，特制作本文档。
 
@@ -38,14 +38,14 @@
 
 ### Nacos和Spring程序是怎么协同工作的？
 
-1. Nacos服务先行启动
-2. 将动态配置导入Nacos
-3. 程序启动阶段，通过Spring Cloud会根据静态配置文件中的配置，尝试寻找正在运行的Nacos服务节点
-4. 找到节点后，Spring Cloud请求Nacos注入动态配置
-5. Nacos根据先前导入的动态配置文件，提供给Spring程序
-6. 程序对本地静态配置文件和动态注入的动态配置文件求并集，合并冲突的项取动态配置文件的值
-7. 程序根据合并后的配置启动服务并执行，但保持与Nacos服务节点的联系
-8. 程序监听Nacos服务节点发来的配置变更命令，当管理员在Nacos发布新配置文件时，实时进行变更
+1. Nacos服务先行启动。
+2. 将动态配置导入Nacos。
+3. 程序启动阶段，通过Spring Cloud会根据静态配置文件中的配置，尝试寻找正在运行的Nacos服务节点。
+4. 找到节点后，Spring Cloud请求Nacos注入动态配置。
+5. Nacos根据先前导入的动态配置文件，提供给Spring程序。
+6. 程序对本地静态配置文件和动态注入的动态配置文件求并集，合并冲突的项取动态配置文件的值。
+7. 程序根据合并后的配置启动服务并执行，但保持与Nacos服务节点的联系。
+8. 程序监听Nacos服务节点发来的配置变更命令，当管理员在Nacos发布新配置文件时，实时进行变更。
 
 ​	以上就是Nacos和Spring程序协同工作过程。
 
@@ -56,7 +56,30 @@
 1. 老师给的配置文件是一个压缩包，可以直接导入nacos，但是本项目将它们从压缩包中抽出来，添加了一些注释，方便理解。
 2. 老师把spring.datasource配置项配置在demo-dev.yml中，但我们基本不会使用mysql以外的数据源，因此本项目将数据源的配置放在了静态的配置文件中，方便Gateway和Demo共享数据源。
 3. 删除了一些本身就是默认值的配置项，减少了冗余信息。
-4. 
 
-### 如何理解配置文件中的主要参数？
+### 如何部署本项目？
 
+1. 首先自行下载并配置好nacos（要求【你的nacos文件夹】/conf/application.properties中的nacos.core.auth.enabled条目为true），nacos版本号应当大于3，打开cmd，将路径导航到nacos安装目录下的bin文件夹，运行startup.cmd -m standalone命令启动nacos（nacos启动要求secret key的，可以随便输入，但是第二次和第三次的secret key应当一致。
+2. 打开浏览器访问localhost:8080/next，设置好用户名密码，找到平台管理 -> 命名空间，创建一个新的命名空间，注意，提示要求输入命名空间名称和命名空间ID，这两个都填写shiep。
+3. 完成后转到配置管理，选择新建配置，第一个配置文件名写demo-dev，选择格式为YAML，在【项目文件夹】/src/main/resources文件夹下找到demo-dev.yml和gateway-dev.yml，将demo-dev.yml的内容复制进demo-dev，gateway-dev.yml的内容复制进gateway-dev。
+4. 完成后点击发布，回到项目文件夹中。
+5. 进入【项目文件夹】/src/main/resources文件夹，找到application.yml，将配置文件中的数据库用户名和密码、nacos用户名和密码换成自己的。
+6. 完成之后，打开Intell IDEA，先关闭以前的项目，再在开始页面右上角点击“打开”，导航到项目文件夹，点击“选择文件夹”以打开。
+7. 在IDE中打开pom.xml，右键点击“+添加为maven项目”，随后再次右键选择maven -> 同步项目以安装pom.xml中的依赖。
+8. 编写启动配置，在IDE右上角，找到“当前文件”，点击下拉菜单，选择“编辑配置”
+9. 点击左上角加号，新建一个类型为SpringBoot的启动配置，启动类为DemoApplication（要输入完整，如本项目为com.demo.DemoApplication），点击“修改选项”，找到“程序实参”，在新增的输入框中输入“--spring.application.name=demo --server.port=8081”，点击应用生效。
+10. 点击左上角加号，新建一个类型为SpringBoot的启动配置，启动类为GatewayApplication（要输入完整，如本项目为com.gateway.GatewayApplication），点击“修改选项”，找到“程序实参”，在新增的输入框中输入“--spring.application.name=gateway --server.port=8082”，点击应用生效。
+11. 启动DemoApplication和GatewayApplication，两个程序开始运行后，查看nacos后台检查这两个服务是否已经上线。
+12. 进行后续的接口测试实验，要求使用apifox向localhost:8081发送四种不同的请求，观察后台数据库和返回的HTTP数据包是否符合预期。
+
+### 关于使用git进行分发的说明
+
+​	Git是最常用的版本控制系统，它可以让不同的开发者进行协同开发，遗憾的是，笔者认为整个计算机专业中，会使用git的学生可谓屈指可数，能使用技术手段登录到代码托管平台Github的人更是少之又少，这对本教程的普及带来极大麻烦，因为每上一次课，这些实验代码就会有更新，每次把代码压缩包分发出去，使用者都要从头部署一遍，并且根本没有协同开发可言。在这里，笔者强烈建议一切看到本教程的同学，无论你以何种方式看到这段文字，都立刻把学习git安排上日程，在百度、微软必应、甚至是AI对话软件中搜索，都有足够完善的git教程。笔者整理部署的这些内容，会在Github和Gitee两个平台上开源。当然，你依然可以从这些平台上下载代码压缩包（这是平台自己帮我压缩的），手动发给别人，作为一种不那么方便但是备用的手段，几个平台的仓库链接附后。给不清楚Github的同学提个醒，这不是什么商业平台。使用Github等平台共享代码是学生在教学过程中的互助行为，也不涉及任何知识产权，但绝不希望你拿它来作弊。
+
+​	会使用git的同学，我很乐意将你们纳入仓库管理者的名单中，目前仅支持Github。协同开发只要求你想认真写代码，想通过JavaEE这门课，并且在提交代码的时候遵守一些非常简单的提交规则即可。有意请联系微信wbc10315558（请注明自己的姓名和缘由）
+
+### 仓库链接
+
+Github: [wbc10315558/SUEP_JavaEE](https://github.com/wbc10315558/SUEP_JavaEE)
+
+Gitee: 敬请期待
