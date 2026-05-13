@@ -4,6 +4,13 @@ spring:
   application:
     name: demo
 
+  # Spring服务需要数据库软件作为支撑
+  # 这里定义的是一个默认的数据源，如果专用配置定义了别的数据源，则会使用后者
+  datasource:
+    url: jdbc:mysql://{你的数据库IP和端口号}/shiep?useUnicode=true&characterEncoding=utf8&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: {你的数据库账号}
+    password: {你的数据库密码}
 
 mybatis-plus:
 
